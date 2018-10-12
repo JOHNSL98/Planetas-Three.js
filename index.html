@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      background-color: #ffffff;
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body style="background-color:black;">
+    <input type="button" value="Tierra" onClick=" window.location.href='Tierra.html' ">
+    <input type="button" value="Venus" onClick=" window.location.href='Venus.html' ">
+    <input type="button" value="Mercurio" onClick=" window.location.href='Mercurio.html' ">
+    <input type="button" value="Marte" onClick=" window.location.href='Marte.html' ">
+    <input type="button" value="Jupiter" onClick=" window.location.href='Jupiter.html' ">
+    <input type="button" value="Sol" onClick=" window.location.href='index.html' ">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/94/three.min.js"></script>
+  <script>
+
+    var escena, renderizador, camara, render, luz;
+    var sol, estrellas, rotacion = 6;
+
+    function init() {
+
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10);
+      camera.position.z = 3;
+
+      crearEscena();
+      crearRenderizador();
+      crearCamara();
+      crearLuzPunto();
+      crearEstrellas();
+      crearSol();
+
+      clock = new THREE.Clock();
+      document.body.appendChild(renderizador.domElement);
+      render();
+    }
+
+    function crearEscena() {
+      escena = new THREE.Scene();
+      escena.background = new THREE.Color(0xffffff);
+    }
+
+    function crearRenderizador() {
+      renderizador = new THREE.WebGLRenderer({ antialias: true });
+      renderizador.setSize(window.innerWidth, window.innerHeight);
+      renderizador.setClearColor(0x000000);
+    }
+
+    function render() {
+      sol.rotation.y += 0.0005;
+      requestAnimationFrame(render);
+      renderizador.render(escena, camara);
+    }
+
+    function crearCamara() {
+      camara = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camara.name = "camara";
+      camara.position.set(0, 0, 100);
+    }
+
+    function crearSol() {
+      var geometry = new THREE.SphereGeometry(25, 32, 32);
+      var material = new THREE.MeshPhongMaterial({
+        map: THREE.ImageUtils.loadTexture('imagenes/sunmap.jpg'),
+        bumpMap: THREE.ImageUtils.loadTexture('imagenes/sunmap.jpg'),
+        bumpScale:1
+      });
+      sol = new THREE.Mesh(geometry, material);
+      sol.rotation.y = rotacion;
+      escena.add(sol);
+    }
+
+    function crearLuzPunto() {
+      escena.add(new THREE.AmbientLight(0x333333));
+      luz = new THREE.DirectionalLight(0xffffff, 1);
+      luz.position.set(5, 3, 5);
+      escena.add(luz);
+    }
+
+    function crearEstrellas() {
+      var geometry = new THREE.SphereGeometry(94, 32, 32);
+      var material = new THREE.MeshBasicMaterial({
+        map: THREE.ImageUtils.loadTexture('imagenes/galaxy_starfield.png'),
+        side: THREE.BackSide
+      });
+      estrellas = new THREE.Mesh(geometry, material);
+      escena.add(estrellas);
+    }
+
+    init();
+
+  </script>
+</body>
+</html>
